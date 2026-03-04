@@ -10,7 +10,6 @@ class CartService {
   CartEntity get cart => _cart;
 
   Future<void> loadCart() async {
-    await Future.delayed(const Duration(seconds: 1)); // Simulate loading delay
     final data = await storage.getData(StorageKey.CART);
 
     if (data != null && data.isNotEmpty) {
