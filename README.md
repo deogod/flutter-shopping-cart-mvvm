@@ -5,6 +5,7 @@ Dart 3.5.4
 
 Utilizado Java 17
 target/compilesdk 34
+emulador API 33+
 
 #### IMPORTANTE
 
