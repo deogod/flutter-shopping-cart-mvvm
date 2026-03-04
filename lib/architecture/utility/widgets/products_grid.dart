@@ -84,7 +84,7 @@ Widget buildItemCard(Item item, BuildContext context) {
               quantity == 0
                   ? SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
+                      child: FilledButton.icon(
                         onPressed: () async {
                           final success = await vm.addItemToCart(item);
 
@@ -97,7 +97,11 @@ Widget buildItemCard(Item item, BuildContext context) {
                             );
                           }
                         },
-                        child: const Text('Adicionar ao carrinho'),
+                        icon: const Icon(Icons.add),
+                        label: const Text(
+                          'Adicionar ao carrinho',
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     )
                   : Container(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../architecture/achitecture.dart';
+import '../../../checkout/checkout_page.dart';
 import '../../view_model/cart_view_model.dart';
 
 class CartSuccessState extends StatelessWidget {
@@ -10,7 +11,23 @@ class CartSuccessState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return buildCartList(itens, context);
+    return Column(
+      children: [
+        Expanded(child: buildCartList(itens, context)),
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green // Cor de fundo verde
+                ),
+            onPressed: () {
+              context.read<CartViewModel>().setStatus(CartStatus.initial);
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CheckoutPage()),
+                  (route) => false);
+            },
+            child: const Text('Finalizar Compra')),
+      ],
+    );
   }
 }
 
@@ -18,6 +35,9 @@ Widget buildCartList(List<CartItem> items, BuildContext context) {
   return ListView.builder(
     itemCount: items.length,
     itemBuilder: (context, index) {
+      if (items.isEmpty) {
+        return const Center(child: Text('Carrinho Vazio'));
+      }
       final cartItem = items[index];
 
       return buildCartItem(cartItem, context);

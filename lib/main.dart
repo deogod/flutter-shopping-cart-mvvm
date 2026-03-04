@@ -6,6 +6,8 @@ import 'package:flutter_shopping_cart_mvvm/features/home/view/home_page.dart';
 import 'package:flutter_shopping_cart_mvvm/features/products/products_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'features/checkout/checkout_page.dart';
+import 'features/checkout/view_model/checkout_view_model.dart';
 import 'features/home/view_model/home_view_model.dart';
 import 'package:flutter_shopping_cart_mvvm/features/products/view_model/products_view_model.dart';
 
@@ -22,6 +24,15 @@ void main() async {
     ItemRemoteDataSource(),
   );
 
+  final CartViewModel cartViewModel = CartViewModel(
+    CartService(LocalStorage(prefs)),
+  )..loadCart();
+
+  final ProductsViewModel productsViewModel = ProductsViewModel(
+    GetItemsUsecase(itemRepository),
+    CartService(LocalStorage(prefs)),
+  )..loadItems();
+
   runApp(
     MultiProvider(
       providers: [
@@ -34,18 +45,21 @@ void main() async {
           ),
         ),
         ChangeNotifierProvider(
-          create: (_) => ProductsViewModel(
-            GetItemsUsecase(itemRepository),
-            CartService(LocalStorage(prefs)),
-          )..loadItems(),
+          create: (_) => productsViewModel,
         ),
         ChangeNotifierProvider(
-          create: (_) => CartViewModel(
-            CartService(LocalStorage(prefs)),
-          )..loadCart(),
+          create: (_) => cartViewModel,
         ),
         ChangeNotifierProvider(
-          create: (_) => CartService(LocalStorage(prefs))..loadCart(),
+          create: (_) => CheckoutViewModel(
+            cartManager: CartService(LocalStorage(prefs)),
+            doCheckoutUseCase: DoCheckoutUseCase(
+              CheckoutRepositoryImpl(
+                CheckoutRemoteDataSource(),
+              ),
+            ),
+            cartViewModel: cartViewModel,
+          )..getCart(),
         ),
       ],
       child: const MyApp(),
@@ -65,6 +79,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const HomePage(),
         '/products': (context) => const ProductsPage(),
         '/cart': (context) => const CartPage(),
+        '/checkout': (context) => const CheckoutPage(),
       },
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,

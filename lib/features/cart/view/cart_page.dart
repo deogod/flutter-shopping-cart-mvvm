@@ -18,8 +18,8 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
 
-    Future.microtask(() {
-      context.read<CartViewModel>().loadCart();
+    Future.microtask(() async {
+      await context.read<CartViewModel>().loadCart();
     });
   }
 

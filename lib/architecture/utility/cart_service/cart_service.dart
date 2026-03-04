@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import '../../achitecture.dart';
 
-class CartService extends ChangeNotifier {
+class CartService {
   final LocalStorage storage;
 
   CartService(this.storage);
@@ -11,18 +10,16 @@ class CartService extends ChangeNotifier {
   CartEntity get cart => _cart;
 
   Future<void> loadCart() async {
+    await Future.delayed(const Duration(seconds: 1)); // Simulate loading delay
     final data = await storage.getData(StorageKey.CART);
 
-    if (data != null) {
+    if (data != null && data.isNotEmpty) {
       _cart = CartMapper().fromJson(data);
-      notifyListeners();
     }
   }
 
   Future<void> addItem(Item item) async {
     _cart = _cart.addItem(item);
-
-    notifyListeners();
 
     await _save();
   }
@@ -30,23 +27,17 @@ class CartService extends ChangeNotifier {
   Future<void> removeItem(Item item) async {
     _cart = _cart.removeItem(item);
 
-    notifyListeners();
-
     await _save();
   }
 
   Future<void> removeCompletely(Item item) async {
     _cart = _cart.removeCompletely(item);
 
-    notifyListeners();
-
     await _save();
   }
 
   Future<void> clear() async {
     _cart = CartEntity(items: []);
-
-    notifyListeners();
 
     await storage.saveData(StorageKey.CART, {});
   }

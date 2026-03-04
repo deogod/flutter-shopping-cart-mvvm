@@ -27,6 +27,10 @@ class CartViewModel extends ChangeNotifier {
 
     _cart = cartManager.cart;
     totalItems = _cart.items.length;
+    if (totalItems == 0) {
+      setStatus(CartStatus.initial);
+      return;
+    }
     setStatus(CartStatus.success);
   }
 
@@ -78,6 +82,13 @@ class CartViewModel extends ChangeNotifier {
     }
 
     return true;
+  }
+
+  void clearCart() {
+    _cart = CartEntity(items: []);
+    totalItems = 0;
+    notifyListeners();
+    cartManager.clear();
   }
 
   int getItemQuantity(Item item) {

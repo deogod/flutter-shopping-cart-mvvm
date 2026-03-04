@@ -6,7 +6,7 @@ class CartInitialState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Carrinho de Compras'),
+      child: Text('Carrinho de compras vazio.'),
     );
   }
 }
